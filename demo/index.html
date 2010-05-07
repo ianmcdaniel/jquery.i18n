@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+    <head>
+        <title>jQuery.i18n</title>
+
+        <script src="../lib/jquery-1.4.2.js" type="text/javascript"></script>
+        <script src="../lib/jquery.json.js" type="text/javascript"></script>
+        <script src="../jquery.i18n.js" type="text/javascript"></script>
+        <script src="translations/en.js" type="text/javascript"></script>
+
+        <style>
+
+          body {margin:20px;font-size:12px;font-family:Arial}
+          .missing {background:red}
+
+          pre {background:#f5f5f5;border:dotted 1px #ccc;padding:10px;}
+        </style>
+
+
+    </head>
+    <body>
+      <select id="language_selector">
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+      </select>
+
+      <h1 id="title"></h1>
+      <pre>
+
+          &lt;select&gt;
+            &lt;option value="en"&gt;en&lt;/option&gt;
+            &lt;option value="es"&gt;es&lt;/option&gt;
+            &lt;option value="fr"&gt;fr&lt;/option&gt;
+          &lt;/select&gt;
+
+          &lt;h1 id="title"&gt;&lt;/h1&gt;
+
+          &lt;script&gt;
+            $.i18n.translation_path = "translations/";
+            $.i18n.loadLocale('en');
+
+            $('#title').html($.t('hello_world'))
+
+            $('#language_selector').bind('change',function(){
+              $.i18n.changeLocale(this.value);
+            })
+
+          &lt;/script&gt;
+      </pre>
+
+      <pre>
+        $.translations['en'] = {
+
+          hello_world: "Hello World"
+
+        }
+      </pre>
+
+
+      <ul id="testme"><ul>
+
+
+      <script>
+        $(function(){
+          $.i18n.translation_path = "translations/";
+
+          $('#language_selector').bind('change',function(){
+            $.i18n.changeLocale(this.value);
+          })
+
+          $('#title').html($.t('hello_world'))
+
+
+          for(i=0;i<5;i++) {
+            $('#testme').append("<li>"+$.t('beer_bottles',{count:i})+"</li>");
+          }
+
+
+        })
+
+      </script>
+
+    </body>
+</html>

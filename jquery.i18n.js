@@ -100,10 +100,12 @@
    * separate language) and a missing flag to indicate if a translation was found.
    */
   i18n.prototype.translate = function(key, data) {
-    var translated, missing = false;
+    var translated, translation_obj, missing = false;
     if(data && typeof data == 'string') data = $.evalJSON(data);
 
-    translated = (!$.translations[this.locale]) ? key : $.translations[this.locale][key];
+    if($.translations[this.locale]) {
+      translated = this.getEntry(key);
+    }
 
     if (!translated) {
       translated = key;
@@ -111,10 +113,16 @@
     } else {
       if (data) {
         if(data.count || data.count === 0) translated = this.pluralize(key, translated, data["count"]);
-        for (var p in data) {
-          var re = new RegExp('\\\{\\\{' + p + '\\\}\\\}', 'g');
-          translated = translated.replace(re, data[p]);
-        };
+
+        if(typeof translated == 'string') {
+          for (var p in data) {
+            var re = new RegExp('\\\{\\\{' + p + '\\\}\\\}', 'g');
+            translated = translated.replace(re, data[p]);
+          };
+        } else {
+          translated = key;
+          missing = true;
+        }
       };
     }
 
@@ -122,12 +130,27 @@
     var td = (data) ? "translation_data='" + $.toJSON(data) + "'" : "";
     var mc = (missing) ? "missing" : "";
 
-    return {
+    translation_obj = {
       text:translated,
       html:"<span class='translation " + mc + "' " + tk + " " + td + ">" + translated + "</span>",
       missing:missing
     }
+    translation_obj.node = $(translation_obj.html);
+    return translation_obj;
   }
+
+  // Parse through the dot notation to get the correct entry
+  i18n.prototype.getEntry = function(key) {
+    var ns = key.split('.');
+    var i, l = ns.length;
+    var base = $.translations[this.locale];
+    for (i = 0; i < l; i++) {
+      if (typeof(base[ns[i]]) == 'undefined') return false;
+      base = base[ns[i]];
+    }
+    return base;
+  }
+
 
   /**
    * Pluralize
@@ -147,20 +170,28 @@
     }
   }
 
+
+
   // create the i18n object in jQuery namespace
   $.i18n = new i18n();
 
   // wrapper for i18n.translate, returns html string
-  $.t = function(key,data) {
-    return $.i18n.translate(key,data).html
+  $.t = function(key,data,type) {
+    type = type || 'html';
+    if(!type.match(/^text$|^html$|^node$/)) {
+      $.error('Type not supported, try "html","text" or "node".');
+      type = 'html'
+    }
+    return $.i18n.translate(key,data)[type];
   }
 
   // translates text in all selected DOM node to current language
-  $.fn.t = function(data) {
-     return this.each(function() {
-       var t = $(this).text();
-       $(this).empty().html($.i18n.translate(t,data,true).html);
-     });
+  $.fn.t = function(data,type) {
+    type = type || 'html';
+    return this.each(function() {
+      var t = $(this).text();
+      $(this).empty().html($.i18n.translate(t,data)[type]);
+    });
   }
 
 
