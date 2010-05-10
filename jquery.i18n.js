@@ -1,4 +1,4 @@
-﻿/*
+/*
  * jQuery i18n Plugin
  * version: 0.1 (2010-04-23)
  *
@@ -116,8 +116,21 @@
 
         if(typeof translated == 'string') {
           for (var p in data) {
-            var re = new RegExp('\\\{\\\{' + p + '\\\}\\\}', 'g');
-            translated = translated.replace(re, data[p]);
+            
+            var re = new RegExp('\\\{\\\{(' + p + '|' + p + ' .+)\\\}\\\}', 'g');
+            translated = translated.replace(re, function(match,text){
+              var args = text.split(' ');
+              if(args.length>1) {
+                if(data[args[0]] && typeof data[args[0]] == 'function') {
+                  return data[args.shift()](args.join(' '))
+                } else {
+                  missing = true;
+                  return match;
+                }
+              } else {
+                return data[p];
+              }
+            });
           };
         } else {
           translated = key;

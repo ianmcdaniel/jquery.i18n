@@ -1,4 +1,4 @@
-﻿$.translations = $.translations || {};
+$.translations = $.translations || {};
 $.translations['en'] = {
 
   hello_world: "Hello World",
