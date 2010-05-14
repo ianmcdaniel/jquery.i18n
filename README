@@ -1,11 +1,12 @@
- jQuery.i18n
-=========
+jQuery.i18n
+-----------
+
 jQuery.i18n is a jQuery plugin that makes it easy to internationalize your AJAX applications.
 
 
 
-== Usage
-    
+Usage
+-----
     
     $.i18n.locale = "en"
     
