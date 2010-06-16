@@ -1,3 +1,4 @@
+<!-- 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -53,9 +54,12 @@
     </div>
 
     <h2>Authors</h2>
-<p>Ian McDaniel (ianmcdaniel@gmail.com)<br/><br/>      </p>
+<p>Ian McDaniel (ianmcdaniel@gmail.com)
+<br/>
+<br/>      </p>
 <h2>Contact</h2>
-<p>Ian McDaniel (ianmcdaniel@gmail.com)<br/>      </p>
+<p>Ian McDaniel (ianmcdaniel@gmail.com)
+<br/>      </p>
 
 
     <h2>Download</h2>
@@ -78,3 +82,77 @@
   
 </body>
 </html>
+
+-->
+<html>
+  <head>
+    <title></title>
+    <style type="text/css">
+      body { margin: 20px; font-family: arial,verdana,helvetica; background: #fff;}
+      div {white-space:nowrap}
+
+    </style>
+      <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.1.0/prototype.js"></script>
+
+
+  </head>
+
+  <body>
+    Number of Hats: <input id="hat_number" size="2" value="50" /><br>
+    <button onclick="makeHatArray()">Get Random Hats</button>
+    <button onclick="makeGuessesArray()">Guess Hat Lineup</button>
+    <br><br>
+    <div id="hats"></div>
+    <br style="clear:both" />
+    <div id="guesses"></div>
+
+
+    <script type="text/javascript">
+      var total_reds, past_reds = 0;
+      var hat_array = [];
+      var guess_array = [];
+      var hat_size = 2;
+
+      $('hat_number').observe('change',function(){
+        var hat_number = parseInt($F('hat_number')) || 50;
+        hat_size = 100/hat_number;
+      })
+
+      function makeHatArray() {
+        $('hats').update();
+        var hat_number = parseInt($F('hat_number')) || 50;
+        hat_array = [];
+        for(i=0;i<hat_number;i++) {
+          var color = Math.floor(Math.random()*2) ? "red" : "blue";
+          hat_array.push(color);
+          var hat = new Element('img').setStyle({width:hat_size+'%',height:'25px',backgroundColor:color})
+          $('hats').appendChild(hat)
+        }
+      }
+
+      function makeGuessesArray() {
+        $('guesses').update();
+        guess_array = [];
+        past_reds = 0;
+        hat_array.each(function(hat, index) {
+          var future_reds = hat_array.findAll(function(h,i){return (h=='red' && i>index)}).length;
+          if(index===0) total_reds = future_reds;
+          var guess = (total_reds - (future_reds + past_reds) == 1) ? 'red' : 'blue';
+          if(guess == 'red') past_reds++;
+          guess_array.push(guess);
+          var hat = new Element('img').setStyle({width:hat_size+'%',height:'25px',backgroundColor:guess})
+          $('guesses').appendChild(hat)
+
+
+        })
+      }
+
+
+    </script>
+
+
+  </body>
+
+</html>
+
+
