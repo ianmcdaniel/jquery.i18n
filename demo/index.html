@@ -7,6 +7,7 @@
         <script src="../lib/jquery.json.js" type="text/javascript"></script>
         <script src="../jquery.i18n.js" type="text/javascript"></script>
         <script src="translations/en.js" type="text/javascript"></script>
+        <script src="translations/es.js" type="text/javascript"></script>
 
         <style>
 
@@ -19,67 +20,64 @@
 
     </head>
     <body>
-      <select id="language_selector">
-        <option value="en">English</option>
-        <option value="es">Español</option>
-        <option value="fr">Français</option>
-      </select>
 
-      <h1 id="title"></h1>
-      <pre>
+  <pre>
+    // sample translations
+    $.translations['es'] = {
+      hello_world: "Hola Mundo",
+      has_items: {
+        zero            : "{{name}} no tiene ningun articulo",
+        one             : "{{name}} Joe tiene un articulo",
+        other           : "{{name}} Joe tiene {{count}} articulos"
+      }
+    }
+  </pre>
+  <pre>
+    &lt;select&gt;
+      &lt;option value="en"&gt;en&lt;/option&gt;
+      &lt;option value="es"&gt;es&lt;/option&gt;
+    &lt;/select&gt;
 
-          &lt;select&gt;
-            &lt;option value="en"&gt;en&lt;/option&gt;
-            &lt;option value="es"&gt;es&lt;/option&gt;
-            &lt;option value="fr"&gt;fr&lt;/option&gt;
-          &lt;/select&gt;
+    &lt;script&gt;
+      $.i18n.translation_path = "translations/";
+      $.i18n.loadLocale('en');
 
-          &lt;h1 id="title"&gt;&lt;/h1&gt;
+      $('#title').html($.t('hello_world'))
 
-          &lt;script&gt;
-            $.i18n.translation_path = "translations/";
-            $.i18n.loadLocale('en');
-
-            $('#title').html($.t('hello_world'))
-
-            $('#language_selector').bind('change',function(){
-              $.i18n.changeLocale(this.value);
-            })
-
-          &lt;/script&gt;
-      </pre>
-
-      <pre>
-        $.translations['en'] = {
-
-          hello_world: "Hello World"
-
-        }
-      </pre>
+      $('#language_selector').bind('change',function(){
+        $.i18n.changeLocale(this.value);
+      })
+    &lt;/script&gt;
+  </pre>
 
 
-      <ul id="testme"><ul>
+      
+    <strong>Change Language:</strong>
+    <select id="language_selector">
+      <option value="en">English</option>
+      <option value="es">Español</option>
+    </select>
+
+    <h1 id="title"></h1>
+    <ul id="list"><ul>
 
 
-      <script>
-        $(function(){
-          $.i18n.translation_path = "translations/";
+    <script>
+      $(function(){
+        $.i18n.translation_path = "translations/";
 
-          $('#language_selector').bind('change',function(){
-            $.i18n.changeLocale(this.value);
-          })
-
-          $('#title').html($.t('hello_world'))
-
-
-          for(i=0;i<5;i++) {
-            $('#testme').append("<li>"+$.t('beer_bottles',{count:i})+"</li>");
-          }
-
-
+        $('#language_selector').bind('change',function(){
+          $.i18n.changeLocale(this.value);
         })
 
-      </script>
+        $('#title').html($.t('hello_world'))
 
-    </body>
+        for(i=0;i<5;i++) {
+          $('#list').append("<li>"+$.t('has_items',{name:'Joe', count:i})+"</li>");
+        }
+      })
+
+    </script>
+
+  </body>
 </html>
